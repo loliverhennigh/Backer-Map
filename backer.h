@@ -1,8 +1,10 @@
 
+#include "point.h"
+#include <stdbool.h>
 
 typedef struct {
-	point ** system_a;
-	point ** system_b;
+	point * system_a;
+	point * system_b;
 	unsigned int size;
 } backer;
 
