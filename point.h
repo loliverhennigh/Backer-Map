@@ -1,14 +1,19 @@
 
 
+#ifndef _point_H_
+#define _point_H_
+
+
 typedef struct {
-	unsigned int size_x;
-	unsigned int size_y;
-	int * x;
-	int * y;
+	unsigned int pos;
+	int * list;
 
 } point;
 
-	
+void point_init(point * p, unsigned int pos);
+void point_iter(point * p);
+
+#endif	
 
 
 
