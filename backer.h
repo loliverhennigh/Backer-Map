@@ -12,8 +12,8 @@ typedef struct {
 } backer;
 
 backer * backer_create(unsigned int size, unsigned int number_points);
-void run_inter(backer * b);
-void run_pert(backer * b);
+void backer_iter(backer * b);
+void backer_pert(backer * b, unsigned int where);
 
 #endif
 

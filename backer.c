@@ -18,14 +18,26 @@ backer * backer_create(unsigned int size, unsigned int num)
 	return b;	
 }
 
-void run_inter(backer * b)
+void backer_iter(backer * b)
 {
-	
-
-
+	int i = 0;
+	for(i = 0; i < b->size; i++)
+	{
+		point_iter(b->system_a[i]);
+		point_iter(b->system_b[i]);
+	}
 }
 
-
-
-
+void backer_pert(backer * b, unsigned int where)
+{
+	int i = 0;
+	for(i = 0; i < b->size; i++)
+	{
+		if (point_get_value(b->system_a[i], where) == point_get_value(b->system_b[i], where))
+		{
+			point_flip(b->system_a[i], where);
+			point_flip(b->system_b[i], where);
+		}
+	}
+}
 

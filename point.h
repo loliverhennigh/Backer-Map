@@ -12,6 +12,7 @@ typedef struct {
 
 void point_init(point * p, unsigned int pos);
 void point_iter(point * p);
+void point_flip(point * p, unsigned int where);
 
 #endif	
 
