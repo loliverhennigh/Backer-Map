@@ -19,9 +19,14 @@ void point_flip(point * p, unsigned int where)
 	p->list[p->pos + where] = -p->list[p->pos + where] + 1;
 }
 
-int point_get_value(point * p, unsigned int where)
+int point_get_state(point * p, unsigned int where)
 {
-	return p->list[p->pos + where];
+	return p->list[where];
 
+}
+
+void point_set_state(point * p, unsigned int where, int state)
+{
+	p->list[where] = state;
 }
 
