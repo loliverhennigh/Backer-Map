@@ -2,6 +2,7 @@
 #include "backer.h"
 #include "point.h"
 #include<malloc.h>
+#include<math.h>
 
 backer * backer_create(unsigned int size, unsigned int num)
 {
@@ -53,8 +54,22 @@ backer * backer_create_from_other_a(backer * b, int * order, int start)
 	{
 		sum = sum + store[i];
 	}
-	printf("got some %d", sum);
+	//printf("got some %d", sum);
 
+	int w = 0;
+	backer * r = backer_create(b->size, sum);
+	for (i = 0; i < b->num; i++)
+	{
+		if(store[i] == 1)
+		{
+			r->system_a[w] = b->system_a[i];
+			r->system_b[w] = b->system_b[i];
+			point_set_pos(r->system_a[w],b->size / 2);
+			point_set_pos(r->system_b[w],b->size / 2);
+			w = w + 1;
+		}
+	} 
+	return r;
 }
 
 void backer_init_rand(backer * b)
@@ -118,6 +133,16 @@ void backer_pert(backer * b, unsigned int where)
 	int i = 0;
 	for(i = 0; i < b->size; i++)
 	{
+		point_flip(b->system_a[i], where);
+		point_flip(b->system_b[i], where);
+	}
+}
+
+void backer_pert_coupled(backer * b, unsigned int where)
+{
+	int i = 0;
+	for(i = 0; i < b->size; i++)
+	{
 		if (point_get_state(b->system_a[i], where) == point_get_state(b->system_b[i], where))
 		{
 			point_flip(b->system_a[i], where);
@@ -125,4 +150,33 @@ void backer_pert(backer * b, unsigned int where)
 		}
 	}
 }
+
+float backer_entropy_a(backer * back)
+{
+	int i = 0;
+	int box[16];
+	int * point;
+
+	for(i = 0; i < 16; i++)
+	{
+		box[i] = 0;
+	}	
+
+	for(i = 0; i < back->num; i++)
+	{
+		box[point_get_box(back->system_a[i])]++;
+	}
+	
+	float entropy = 0.0;
+	float probability = 0.0;
+
+	// testing the stuff
+	for( i = 0; i < 16; i++)
+	{
+		probability = (float)box[i]/back->num + .000001;
+		entropy = entropy + probability * log(probability);
+	}
+	return entropy;
+}
+
 

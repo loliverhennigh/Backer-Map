@@ -30,3 +30,18 @@ void point_set_state(point * p, unsigned int where, int state)
 	p->list[where] = state;
 }
 
+void point_set_pos(point * p, unsigned int where)
+{
+	p->pos = where;
+}
+
+int point_get_box(point * p)
+{
+	int r = 0;
+	r = r + point_get_state(p, p->pos - 2);
+	r = r + 2*point_get_state(p, p->pos - 1);
+	r = r + 4*point_get_state(p, p->pos );
+	r = r + 8*point_get_state(p, p->pos +1);
+	return r;
+}
+

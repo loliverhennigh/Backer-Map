@@ -20,6 +20,8 @@ void backer_pert(backer * b, unsigned int where);
 void backer_init_rand(backer * b);
 void backer_init_ordered_a(backer * b, int * order, int start);
 void backer_init_ordered_b(backer * b, int * order, int start);
+float backer_entropy_a(backer * b);
+
 
 #endif
 
