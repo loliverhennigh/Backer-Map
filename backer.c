@@ -10,12 +10,18 @@ backer * backer_create(unsigned int size, unsigned int num)
 	backer *b = (backer *)malloc(sizeof(backer));
 	b->system_a = (point **)malloc(sizeof(point *) * num);
 	b->system_b = (point **)malloc(sizeof(point *) * num);
+	b->system_a_store = (point **)malloc(sizeof(point *) * num);
+	b->system_b_store = (point **)malloc(sizeof(point *) * num);
 	for (i = 0; i < num; i++)
 	{
 		b->system_a[i] = (point *)malloc(sizeof(point));
 		b->system_b[i] = (point *)malloc(sizeof(point));
+		b->system_a_store[i] = (point *)malloc(sizeof(point));
+		b->system_b_store[i] = (point *)malloc(sizeof(point));
 		point_init(b->system_a[i], size);
 		point_init(b->system_b[i], size);
+		point_init(b->system_a_store[i], size);
+		point_init(b->system_b_store[i], size);
 	}
 	b->size = size;
 	b->num = num;
@@ -43,7 +49,7 @@ backer * backer_create_from_other_a(backer * b, int * order, int start)
 		{
 			if(point_get_state(b->system_a[i], b->pos - start/2 + j) != order[j])
 			{
-				//printf("order %u \n", point_get_state(b->system_a[i], b->pos - start/2 + j));
+				printf("order %u \n", point_get_state(b->system_a[i], b->pos - start/2 + j));
 				store[i] = 0;
 			}
 		}
@@ -54,7 +60,7 @@ backer * backer_create_from_other_a(backer * b, int * order, int start)
 	{
 		sum = sum + store[i];
 	}
-	//printf("got some %d", sum);
+	printf("got some %d", sum);
 
 	int w = 0;
 	backer * r = backer_create(b->size, sum);
@@ -62,8 +68,13 @@ backer * backer_create_from_other_a(backer * b, int * order, int start)
 	{
 		if(store[i] == 1)
 		{
-			r->system_a[w] = b->system_a[i];
-			r->system_b[w] = b->system_b[i];
+			for (j = 0; j < b->size; j++)
+			{
+				point_set_state(r->system_a[w], j, point_get_state(b->system_a_store[i], j));
+				point_set_state(r->system_a_store[w], j, point_get_state(b->system_a_store[i], j));
+				point_set_state(r->system_b[w], j, point_get_state(b->system_b_store[i], j));
+				point_set_state(r->system_b_store[w], j, point_get_state(b->system_b_store[i], j));
+			}
 			point_set_pos(r->system_a[w],b->size / 2);
 			point_set_pos(r->system_b[w],b->size / 2);
 			w = w + 1;
@@ -83,8 +94,10 @@ void backer_init_rand(backer * b)
 		{
 			r = rand() % 2;
 			point_set_state(b->system_a[i], j, r);
+			point_set_state(b->system_a_store[i], j, r);
 			r = rand() % 2;
 			point_set_state(b->system_b[i], j, r);
+			point_set_state(b->system_b_store[i], j, r);
 		}
 	}
 }
@@ -99,6 +112,7 @@ void backer_init_ordered_a(backer * b, int * order, int start)
 		for (j = 0; j < start; j++)
 		{
 			point_set_state(b->system_a[i], b->pos - start/2 + j ,order[j]);
+			point_set_state(b->system_a_store[i], b->pos - start/2 + j ,order[j]);
 		}
 	}
 }
@@ -113,6 +127,7 @@ void backer_init_ordered_b(backer * b, int * order, int start)
 		for (j = 0; j < start; j++)
 		{
 			point_set_state(b->system_b[i], b->pos - start/2 + j ,order[j]);
+			point_set_state(b->system_b_store[i], b->pos - start/2 + j ,order[j]);
 		}
 	}
 }

@@ -8,6 +8,8 @@
 typedef struct {
 	point ** system_a;
 	point ** system_b;
+	point ** system_a_store;
+	point ** system_b_store;
 	unsigned int num;
 	unsigned int size;
 	unsigned int pos;
