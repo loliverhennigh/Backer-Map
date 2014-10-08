@@ -16,7 +16,7 @@ typedef struct {
 } backer;
 
 backer * backer_create(unsigned int size, unsigned int number_points);
-backer * backer_create_from_other(backer * b, int * order, int start);
+void backer_create_from_other(backer * b, int * order, int start);
 void backer_iter(backer * b);
 void backer_pert(backer * b, unsigned int where);
 void backer_init_rand(backer * b);

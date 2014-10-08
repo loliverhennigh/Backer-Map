@@ -11,7 +11,7 @@ void point_init(point * p, unsigned int size)
 
 void point_iter(point * p)
 {
-	p->pos = p->pos + 1;
+	p->pos++;
 }
 
 void point_flip(point * p, unsigned int where)
@@ -45,3 +45,11 @@ int point_get_box(point * p)
 	return r;
 }
 
+void point_print_txt(point * p, int which)
+{
+	int i = 0;
+	for (i = 0; i < which; i++)
+	{
+		printf("%d \n", point_get_state(p, i));
+	}
+}

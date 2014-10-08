@@ -11,9 +11,9 @@ int main() {
 	int i= 0;
 
 // all the variables
-	int num = 100;
-	int size = 100;
-	int time_run = 40;
+	int num = 100000;
+	int size = 50;
+	int time_run = 20;
 
 // more
 	backer * b = backer_create(size,num);
@@ -22,18 +22,19 @@ int main() {
 	backer_init_ordered_a(b,order,start);
 	float entropy[time_run];
 
-
 	for(i = 0; i < time_run; i++)
 	{
 		backer_iter(b);
 //		backer_pert(b, 3);
 	}
-	backer * r = backer_create_from_other_a(b, order, start);
-	
+	backer * r = backer_create(size,num);
+	backer_create_from_other_a(b, r, order, start);
+	point_print_txt(r->system_a[1], size);
+
 	for(i = 0; i < time_run; i++)
 	{
-		entropy[i] = backer_entropy_a(r);
 		backer_iter(r);
+		entropy[i] = backer_entropy_a(r);
 //		backer_pert(b, 4);	
 	}
 
