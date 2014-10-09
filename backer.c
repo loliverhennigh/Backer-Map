@@ -60,7 +60,7 @@ void backer_create_from_other_a(backer * b, backer * r, int * order, int start)
 	{
 		sum = sum + store[i];
 	}
-	printf("got some %d", sum);
+	printf("got some %d \n", sum);
 
 	int w = 0;
 	for (i = 0; i < b->num; i++)
@@ -74,8 +74,8 @@ void backer_create_from_other_a(backer * b, backer * r, int * order, int start)
 				point_set_state(r->system_b[w], j, point_get_state(b->system_b_store[i], j));
 				point_set_state(r->system_b_store[w], j, point_get_state(b->system_b_store[i], j));
 			}
-		//	point_set_pos(r->system_a[w],b->size / 2);
-		//	point_set_pos(r->system_b[w],b->size / 2);
+			point_set_pos(r->system_a[w],b->size / 2);
+			point_set_pos(r->system_b[w],b->size / 2);
 			w = w + 1;
 		}
 	} 
@@ -134,7 +134,7 @@ void backer_init_ordered_b(backer * b, int * order, int start)
 void backer_iter(backer * b)
 {
 	int i = 0;
-	for(i = 0; i < b->size; i++)
+	for(i = 0; i < b->num; i++)
 	{
 		point_iter(b->system_a[i]);
 		point_iter(b->system_b[i]);
@@ -145,20 +145,17 @@ void backer_iter(backer * b)
 void backer_pert(backer * b, unsigned int where)
 {
 	int i = 0;
-	for(i = 0; i < b->size; i++)
+	for(i = 0; i < b->num; i++)
 	{
-		if(point_get_state(b->system_a[i], b->pos) == 1)
-		{
-			point_flip(b->system_a[i], where);
-			point_flip(b->system_b[i], where);
-		}
+		point_set_state(b->system_a[i], where, 1);
+		point_set_state(b->system_b[i], where, 1);
 	}
 }
 
 void backer_pert_coupled(backer * b, unsigned int where)
 {
 	int i = 0;
-	for(i = 0; i < b->size; i++)
+	for(i = 0; i < b->num; i++)
 	{
 		if (point_get_state(b->system_a[i], where) == point_get_state(b->system_b[i], where))
 		{
@@ -205,6 +202,44 @@ float backer_entropy_a(backer * back)
 	return entropy;
 }
 
+float backer_entropy_b(backer * back)
+{
+	int i = 0;
+	int box[16];
+	int * point;
+
+	for(i = 0; i < 16; i++)
+	{
+		box[i] = 0;
+	}	
+
+	for(i = 0; i < back->num; i++)
+	{
+		box[point_get_box(back->system_b[i])]++;
+	}
+	
+	float entropy = 0.0;
+	float probability = 0.0;
+
+	// testing the stuff
+	
+	for( i = 0; i < 16; i++)
+	{
+		printf("| %d |", box[i]);
+	}
+	
+	printf("\n");
+
+
+	for( i = 0; i < 16; i++)
+	{
+		probability = (float)box[i]/back->num + .000001;
+		entropy = entropy + probability * log(probability);
+	}
+	return entropy;
+}
+
+
 int backer_box_sum(backer * b, int * order, int start)
 {
 	int i = 0;
@@ -236,7 +271,7 @@ int backer_box_sum(backer * b, int * order, int start)
 	{
 		sum = sum + store[i];
 	}
-	
+	printf("got some %d \n", sum);	
 	return sum;
 }
 
