@@ -60,7 +60,7 @@ void backer_create_from_other_a(backer * b, backer * r, int * order, int start)
 	{
 		sum = sum + store[i];
 	}
-	//printf("got some %d", sum);
+	printf("got some %d", sum);
 
 	int w = 0;
 	for (i = 0; i < b->num; i++)
@@ -139,7 +139,7 @@ void backer_iter(backer * b)
 		point_iter(b->system_a[i]);
 		point_iter(b->system_b[i]);
 	}
-	b->pos = b->pos - 1;
+	b->pos = b->pos + 1;
 }
 
 void backer_pert(backer * b, unsigned int where)
@@ -147,8 +147,11 @@ void backer_pert(backer * b, unsigned int where)
 	int i = 0;
 	for(i = 0; i < b->size; i++)
 	{
-		point_flip(b->system_a[i], where);
-		point_flip(b->system_b[i], where);
+		if(point_get_state(b->system_a[i], b->pos) == 1)
+		{
+			point_flip(b->system_a[i], where);
+			point_flip(b->system_b[i], where);
+		}
 	}
 }
 
@@ -185,6 +188,15 @@ float backer_entropy_a(backer * back)
 	float probability = 0.0;
 
 	// testing the stuff
+	
+	for( i = 0; i < 16; i++)
+	{
+		printf("| %d |", box[i]);
+	}
+	
+	printf("\n");
+
+
 	for( i = 0; i < 16; i++)
 	{
 		probability = (float)box[i]/back->num + .000001;
@@ -192,5 +204,41 @@ float backer_entropy_a(backer * back)
 	}
 	return entropy;
 }
+
+int backer_box_sum(backer * b, int * order, int start)
+{
+	int i = 0;
+	int j = 0;
+	int should = 1;
+	int * store = (int *) malloc(sizeof(int) * b->num);
+
+	// make store all one
+	for (i = 0; i < b->num; i++)
+	{
+		store[i] = 1;
+	}
+
+	// now test to store them or not
+	for (i = 0; i < b->num; i++)
+	{
+		for (j = 0; j< start; j++)
+		{
+//			printf("order %u \n", point_get_state(b->system_a[i], b->pos - start/2 + j));
+			if(point_get_state(b->system_a[i], b->pos - start/2 + j) != order[j])
+			{
+				store[i] = 0;
+			}
+		}
+	}
+
+	int sum = 0;
+	for (i = 0; i < b->num; i++)
+	{
+		sum = sum + store[i];
+	}
+	
+	return sum;
+}
+
 
 

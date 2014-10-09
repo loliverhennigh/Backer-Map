@@ -23,7 +23,7 @@ void backer_init_rand(backer * b);
 void backer_init_ordered_a(backer * b, int * order, int start);
 void backer_init_ordered_b(backer * b, int * order, int start);
 float backer_entropy_a(backer * b);
-
+int backer_box_sum(backer * b, int * order, int start);
 
 #endif
 
