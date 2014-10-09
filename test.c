@@ -138,13 +138,14 @@ void experiment_boundry_a_pert_coupled(int num, int size, int time_run, int pert
 	backer * b = backer_create(size,num);
 	int start = 8;
 	int order[] = {1, 1, 1, 1, 1, 1, 1, 1};
-	backer_init_ordered_b(b);
+	backer_init_ordered_b(b, order, start);
 	float entropy_a[time_run];
 	float entropy_b[time_run];
 
 	for(i = 0; i < time_run; i++)
 	{
 		backer_iter(b);
+		backer_pert_coupled(b);
 	}
 	
 	int sum = backer_box_sum(b, order, start);
@@ -155,6 +156,7 @@ void experiment_boundry_a_pert_coupled(int num, int size, int time_run, int pert
 	for(i = 0; i < time_run; i++)
 	{
 		backer_iter(r);
+		backer_pert_coupled(b);
 		entropy_a[i] = backer_entropy_a(r);
 		entropy_b[i] = backer_entropy_b(r);
 	}
@@ -172,7 +174,7 @@ void experiment_boundry_a_pert_coupled(int num, int size, int time_run, int pert
 	// now for the pert simulation
 	backer * bb  = backer_create(size,num);
 	
-	backer_init_rand(bb);
+//	backer_init_rand(bb);
 
 /*
 	for(i = 0; i < pert_time; i++)

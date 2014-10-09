@@ -152,9 +152,10 @@ void backer_pert(backer * b, unsigned int where)
 	}
 }
 
-void backer_pert_coupled(backer * b, unsigned int where)
+void backer_pert_coupled(backer * b)
 {
 	int i = 0;
+	int where = b->pos;
 	for(i = 0; i < b->num; i++)
 	{
 		if (point_get_state(b->system_a[i], where) == point_get_state(b->system_b[i], where))
