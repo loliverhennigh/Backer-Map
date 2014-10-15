@@ -13,7 +13,7 @@ int main() {
 	srand(time(NULL));
 
 // all the variables
-	int num = 200000;
+	int num = 2000;
 	int size = 100;
 	int time_run = 20;
 	int pert_time = 4;
@@ -156,7 +156,7 @@ void experiment_boundry_a_pert_coupled(int num, int size, int time_run, int pert
 	for(i = 0; i < time_run; i++)
 	{
 		backer_iter(r);
-		backer_pert_coupled(b);
+		backer_pert_coupled(r);
 		entropy_a[i] = backer_entropy_a(r);
 		entropy_b[i] = backer_entropy_b(r);
 	}
@@ -173,7 +173,53 @@ void experiment_boundry_a_pert_coupled(int num, int size, int time_run, int pert
 
 	// now for the pert simulation
 	backer * bb  = backer_create(size,num);
+	backer_init_ordered_b(bb, order, start);
+
+	for(i = 0; i < pert_time; i++)
+	{
+		backer_iter(bb);
+		backer_pert_coupled(bb);
+	}
+	backer_pert(bb, bb->pos+4);	
+	for(i = pert_time; i < time_run; i++)
+	{
+		backer_iter(bb);
+		backer_pert_coupled(bb);
+	}
+
+	sum = backer_box_sum(bb, order, start);
+	backer * rr = backer_create(bb->size, sum);
+	backer_create_from_other_a(bb, rr, order, start);
+
+
+	for(i = 0; i < pert_time; i++)
+	{
+		backer_iter(rr);
+		backer_pert_coupled(rr);
+		entropy_a[i] = backer_entropy_a(rr);
+		entropy_b[i] = backer_entropy_b(rr);
+	}
+	backer_pert(rr, rr->pos+4);
+	for(i = pert_time; i < time_run; i++)
+	{
+		backer_iter(rr);
+		backer_pert_coupled(rr);
+		entropy_a[i] = backer_entropy_a(rr);
+		entropy_b[i] = backer_entropy_b(rr);
+	}
+
+	file_a = "entropy_a_pert.txt";
+	file_b = "entropy_b_pert.txt";
+	fp = fopen(file_a, "w");	
 	
+	print_array_file(fp, entropy_a, time_run); 
+	
+	fp = fopen(file_b, "w");	
+	print_array_file(fp, entropy_b, time_run); 
+
+
+
+
 //	backer_init_rand(bb);
 
 /*
